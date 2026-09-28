@@ -28,10 +28,30 @@ flow_foreground_root: /path/to/rgba_foregrounds
 
 ## Data and Pretrained Models
 
-The datasets and pretrained models will be hosted on Hugging Face.
+DuSR-RealV2 and the pretrained models are hosted on Hugging Face.
 
-- Datasets: **Hugging Face link coming soon**
-- Pretrained models: **Hugging Face link coming soon**
+- DuSR-RealV2: [Hugging Face dataset](https://huggingface.co/datasets/zhangfangpu/DuSR-RealV2)
+- CameraFusion-Real, DuSR-Real, and RealMCVSR-Real:
+  [KeDuSR repository](https://github.com/ZifanCui/KeDuSR)
+- Pretrained models: [Hugging Face model repository](https://huggingface.co/zhangfangpu/DuSRFlow)
+
+Download DuSR-RealV2 into your configured dataset root:
+
+```bash
+hf download zhangfangpu/DuSR-RealV2 \
+  --repo-type dataset \
+  --local-dir /path/to/dual_lens_datasets/DuSR-RealV2
+```
+
+Download all official DuFlowNet and DuSRFlow checkpoints:
+
+```bash
+hf download zhangfangpu/DuSRFlow --local-dir weights/pretrained
+```
+
+Install the Hugging Face CLI with `pip install -U huggingface_hub` if the
+`hf` command is unavailable. Both repositories are public and do not require
+authentication for downloading.
 
 Place the datasets under the configured `dataset_root`:
 
