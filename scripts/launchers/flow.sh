@@ -6,11 +6,11 @@ set -euo pipefail
 #   Train or evaluate DuFlowNet on one of the four released datasets.
 #
 # Usage:
-#   bash flow.sh train DATASET GPU FOREGROUND_ROOT [--debug|--check-only]
+#   bash flow.sh train DATASET GPU [FOREGROUND_ROOT] [--debug|--check-only]
 #   bash flow.sh test  DATASET GPU [CHECKPOINT] [--debug|--check-only]
 #
 # Examples:
-#   bash flow.sh train DuSR-RealV2-Paired 0 /path/to/rgba_foregrounds
+#   bash flow.sh train DuSR-RealV2-Paired 0
 #   bash flow.sh test DuSR-RealV2-Paired 0
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"

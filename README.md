@@ -23,7 +23,7 @@ Then update the following entries in `configs/paths.yaml`:
 ```yaml
 python_bin: /path/to/python
 dataset_root: /path/to/dual_lens_datasets
-flow_foreground_root: /path/to/rgba_foregrounds
+flow_foreground_root: /path/to/dual_lens_datasets/DuSR-RealV2/rgba_foregrounds
 ```
 
 ## Data and Pretrained Models
@@ -59,7 +59,8 @@ Place the datasets under the configured `dataset_root`:
 dual_lens_datasets/
 ├── DuSR-RealV2/
 │   ├── Paired/{train,test}/
-│   └── Unpaired/test/
+│   ├── Unpaired/test/
+│   └── rgba_foregrounds/
 ├── CameraFusion-Real/{train,test}/
 ├── DuSR-Real/{train,test}/
 └── RealMCVSR-Real/{train,test}/
@@ -127,10 +128,10 @@ Outputs are saved under `flow_results/` and `results/`.
 Train DuFlowNet with real backgrounds and synthetic RGBA foreground objects:
 
 ```bash
-bash scripts/launchers/flow.sh train DuSR-RealV2-Paired 0 /path/to/rgba_foregrounds
-bash scripts/launchers/flow.sh train CameraFusion-Real 0 /path/to/rgba_foregrounds
-bash scripts/launchers/flow.sh train DuSR-Real 0 /path/to/rgba_foregrounds
-bash scripts/launchers/flow.sh train RealMCVSR-Real 0 /path/to/rgba_foregrounds
+bash scripts/launchers/flow.sh train DuSR-RealV2-Paired 0
+bash scripts/launchers/flow.sh train CameraFusion-Real 0
+bash scripts/launchers/flow.sh train DuSR-Real 0
+bash scripts/launchers/flow.sh train RealMCVSR-Real 0
 ```
 
 Train DuSRFlow with the reconstruction loss:

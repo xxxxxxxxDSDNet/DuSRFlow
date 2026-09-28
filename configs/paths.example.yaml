@@ -1,4 +1,4 @@
 # Copy this file to configs/paths.yaml and update the paths before running.
 python_bin: python
 dataset_root: /path/to/dual_lens_datasets
-flow_foreground_root: /path/to/rgba_foregrounds
+flow_foreground_root: /path/to/dual_lens_datasets/DuSR-RealV2/rgba_foregrounds
