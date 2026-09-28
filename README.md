@@ -169,5 +169,8 @@ DuSRFlow/
 
 ## Acknowledgement
 
-The deformable-convolution operator is based on open-source DCNv2
-implementations. Its original license is included with the source code.
+We thank the authors of [KeDuSR](https://github.com/ZifanCui/KeDuSR) and
+[C²-Matching](https://github.com/yumingj/C2-Matching) for sharing their code.
+The deformable-convolution operator is based on
+[DCNv2](https://github.com/CharlesShang/DCNv2), whose original license is
+included with the source code.
