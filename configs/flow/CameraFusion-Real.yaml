@@ -1,0 +1,26 @@
+dataset_name: CameraFusion-Real
+dataset_root: ${DATASET_ROOT}
+checkpoint: ${FLOW_WEIGHT_ROOT}/DuFlowNet_CameraFusion-Real.pth
+test_mode: full_lr
+folders:
+  lr: LR
+  target: HR
+  reference: Ref_full
+training:
+  preload: true
+  patch_size: 448
+  batch_size: 4
+  num_workers: 2
+  repeat: 150
+  paste_foregrounds: true
+  foreground_min: 80
+  foreground_max: 200
+  homography: 4
+  offset: 10
+  learning_rate: 0.0001
+  total_iter: 400000
+  log_freq: 400
+  test_freq: 20000
+  smooth_alpha: 10
+  smooth_weight: 0.5
+  random_seed: 2024

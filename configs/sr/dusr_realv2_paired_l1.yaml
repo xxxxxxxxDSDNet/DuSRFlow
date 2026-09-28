@@ -1,0 +1,37 @@
+experiment: dusr_realv2_paired_l1
+description: DuSR-RealV2-Paired training with the L1/Charbonnier loss.
+
+train:
+  module: tools.train_sr
+  arguments:
+    dataset_root: ${DATASET_ROOT}
+    dataset_name: DuSR-RealV2-Paired
+    dataset_subdir: DuSR-RealV2/Paired
+    dataset_type: dusr-realv2
+    coordinates: ${PROJECT_ROOT}/coordinates/DuSR-RealV2-Paired.json
+    loss: l1
+    experiment_name: DuSR-RealV2-Paired_L1
+    output_root: ${TRAIN_OUTPUT_ROOT}
+    patch_size: [128, 128]
+    nearby_offset_min: 16
+    nearby_offset_max: 48
+    nearby_offset_multiplier: 2
+    batch_size: 4
+    flow_checkpoint: ${FLOW_WEIGHT_ROOT}/DuFlowNet_DuSR-RealV2-Paired.pth
+    learning_rate: 0.0001
+    total_iter: 250000
+    test_freq: 10000
+
+test:
+  module: tools.test_sr
+  arguments:
+    dataset_root: ${DATASET_ROOT}
+    dataset_name: DuSR-RealV2-Paired
+    dataset_subdir: DuSR-RealV2/Paired
+    dataset_type: dusr-realv2
+    coordinates: ${PROJECT_ROOT}/coordinates/DuSR-RealV2-Paired.json
+    model_variant: v2
+    checkpoint: ${PROJECT_ROOT}/weights/pretrained/DuSRFlow_DuSR-RealV2-Paired_L1.pth
+    result_dir: ${RESULT_ROOT}
+    run_name: L1
+    save_images: true

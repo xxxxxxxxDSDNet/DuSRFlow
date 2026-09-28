@@ -1,0 +1,17 @@
+experiment: dusr_realv2_unpaired
+description: Inference and no-reference evaluation on DuSR-RealV2-Unpaired.
+
+test:
+  module: tools.test_sr
+  arguments:
+    dataset_root: ${DATASET_ROOT}
+    dataset_name: DuSR-RealV2-Unpaired
+    dataset_subdir: DuSR-RealV2/Unpaired
+    dataset_type: dusr-realv2
+    coordinates: ${PROJECT_ROOT}/coordinates/DuSR-RealV2-Unpaired.json
+    model_variant: v2
+    checkpoint: ${PROJECT_ROOT}/weights/pretrained/DuSRFlow_DuSR-RealV2-Paired_L1.pth
+    result_dir: ${RESULT_ROOT}
+    run_name: Paired_L1
+    full_reference_metrics: false
+    save_images: true

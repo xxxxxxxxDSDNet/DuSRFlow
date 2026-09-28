@@ -1,0 +1,11 @@
+numpy
+opencv-python
+PyYAML
+torch
+torchvision
+tqdm
+lpips
+pyiqa
+tensorboard
+thop
+ninja

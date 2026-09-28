@@ -1,0 +1,35 @@
+experiment: realmcvsr_real_l1
+description: RealMCVSR-Real training with the L1/Charbonnier loss.
+
+train:
+  module: tools.train_sr
+  arguments:
+    dataset_root: ${DATASET_ROOT}
+    dataset_name: RealMCVSR-Real
+    dataset_type: external
+    coordinates: ${PROJECT_ROOT}/coordinates/RealMCVSR-Real.json
+    loss: l1
+    experiment_name: RealMCVSR-Real_L1
+    output_root: ${TRAIN_OUTPUT_ROOT}
+    patch_size: [256, 256]
+    nearby_offset_min: 32
+    nearby_offset_max: 96
+    nearby_offset_multiplier: 2
+    batch_size: 4
+    flow_checkpoint: ${FLOW_WEIGHT_ROOT}/DuFlowNet_RealMCVSR-Real.pth
+    learning_rate: 0.0001
+    total_iter: 250000
+    test_freq: 10000
+
+test:
+  module: tools.test_sr
+  arguments:
+    dataset_root: ${DATASET_ROOT}
+    dataset_name: RealMCVSR-Real
+    dataset_type: external
+    coordinates: ${PROJECT_ROOT}/coordinates/RealMCVSR-Real.json
+    model_variant: v3
+    checkpoint: ${PROJECT_ROOT}/weights/pretrained/DuSRFlow_RealMCVSR-Real_L1.pth
+    result_dir: ${RESULT_ROOT}
+    run_name: L1
+    save_images: true

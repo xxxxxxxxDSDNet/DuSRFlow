@@ -1,0 +1,15 @@
+experiment: generation_dusr
+description: Test the DuSR-RealV2-Paired L1 model on DuSR-Real.
+
+test:
+  module: tools.test_sr
+  arguments:
+    dataset_root: ${DATASET_ROOT}
+    dataset_name: DuSR-Real
+    dataset_type: external
+    coordinates: ${PROJECT_ROOT}/coordinates/DuSR-Real.json
+    model_variant: v3
+    checkpoint: ${PROJECT_ROOT}/weights/pretrained/DuSRFlow_DuSR-RealV2-Paired_L1.pth
+    result_dir: ${RESULT_ROOT}/generation
+    run_name: Paired_L1
+    save_images: true

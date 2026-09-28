@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.pytest_cache/
+.mypy_cache/
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
+
+# Native/CUDA builds
+build/
+*.egg-info/
+
+# Local environments
+.env
+.venv/
+env/
+venv/
+
+# Machine-specific paths
+configs/paths.yaml
+
+# Generated experiments
+results/
+training_outputs/
+flow_results/
+flow_training_outputs/
+reproduction_results/
+inference_result/
+launcher_logs/
+*.log
+
+# Local pre-release archive (review manually before deletion)
+tmp/
+
+# Large artifacts distributed separately
+weights/**/*.pth
+*.zip
+
+# Generated images
+*.png
+*.jpg
+*.jpeg

@@ -1,0 +1,27 @@
+dataset_name: DuSR-RealV2-Paired
+dataset_subdir: DuSR-RealV2/Paired
+dataset_root: ${DATASET_ROOT}
+checkpoint: ${FLOW_WEIGHT_ROOT}/DuFlowNet_DuSR-RealV2-Paired.pth
+test_mode: full_lr
+folders:
+  lr: LR
+  target: HR_CC_curve_downsample_bilinear
+  reference: HR_SIFT_CC_curve_downsample_bilinear
+training:
+  preload: true
+  patch_size: 448
+  batch_size: 4
+  num_workers: 2
+  repeat: 150
+  paste_foregrounds: true
+  foreground_min: 80
+  foreground_max: 200
+  homography: 4
+  offset: 10
+  learning_rate: 0.0001
+  total_iter: 400000
+  log_freq: 400
+  test_freq: 20000
+  smooth_alpha: 10
+  smooth_weight: 0.5
+  random_seed: 2024
