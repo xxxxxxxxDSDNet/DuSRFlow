@@ -1,132 +1,51 @@
 # DuSRFlow
 
-## Code terminology
-
-The public code follows the terminology used in the paper:
-
-- `DuSRFlow`: the complete dual-lens super-resolution model;
-- `DuFlowNet`: the dedicated dual-lens flow estimator;
-- `KernelFreeMatching`: KF matching between LR and LR-center;
-- `PatchWarping`: index-based reference patch transfer;
-- `KFDCNWarping`: kernel-free-guided deformable warping.
-
-Legacy checkpoint prefixes are translated automatically when loading.
-Components without an explicit method name retain their implementation names.
-
-Official PyTorch implementation of **DuSRFlow: Dual-Lens Super-Resolution via
-Parallax-Aware Flow Estimation and Complementary Reference Warping**.
-
-This repository contains the released training and evaluation pipelines for:
-
-- **DuFlowNet**, the parallax-aware optical-flow module;
-- **DuSRFlow**, the dual-lens super-resolution model.
-
-Comparison methods and ablation-only variants are not part of this release.
-
-## Acknowledgements
-
-The CUDA deformable-convolution operator is derived from open-source DCNv2
-implementations. Its original license is preserved in
-`dusrflow/models/archs/dcn/LICENSE`. Parts of the restoration utilities follow
-the organization of [BasicSR](https://github.com/XPixelGroup/BasicSR).
-
-## Project structure
-
-```text
-.
-├── configs/
-│   ├── flow/                 # Dataset-specific DuFlowNet configurations
-│   └── sr/                   # Dataset/loss-specific DuSRFlow experiments
-├── coordinates/             # Evaluation regions for external datasets
-├── dusrflow/
-│   ├── data/                 # SR and Flow datasets
-│   ├── models/
-│   │   ├── archs/            # DuSRFlow, DuFlowNet, and CUDA DCN operators
-│   │   ├── flow.py           # DuFlowNet training/evaluation wrapper
-│   │   └── sr_trainer.py     # DuSRFlow optimization and validation
-│   ├── metrics.py
-│   └── utils.py
-├── scripts/
-│   ├── launchers/            # Dataset and multi-GPU launch helpers
-│   └── run.sh                # Run one SR experiment YAML
-├── tools/
-│   ├── train_flow.py / test_flow.py
-│   ├── train_sr.py / test_sr.py
-│   ├── profile_model.py
-│   └── run_experiment.py
-├── weights/                  # Released checkpoints (distributed separately)
-├── run_all.sh                # Optional multi-GPU checkpoint evaluation
-└── train.sh                  # Train one SR dataset/loss configuration
-```
-
-The Flow and SR pipelines deliberately use the same organization: dataset code
-under `dusrflow/data`, model code under `dusrflow/models`, experiment settings
-under `configs`, and executable entry points under `tools`.
+PyTorch implementation of DuSRFlow for dual-lens image super-resolution.
+This repository provides training and evaluation code for the DuFlowNet
+alignment module and the complete DuSRFlow model.
 
 ## Environment
 
-- Python 3.10
-- PyTorch with CUDA support
-- A CUDA toolkit compatible with the installed PyTorch build
-- NVIDIA GPU
-
-Install dependencies:
+The code has been tested with Python 3.10 and CUDA-enabled PyTorch.
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Run commands from the repository root. Set a custom Python executable when
-needed:
-
-```bash
-export PYTHON_BIN=/path/to/python
-```
-
-Create the local path configuration once after cloning:
+Create the local path configuration:
 
 ```bash
 cp configs/paths.example.yaml configs/paths.yaml
 ```
 
-Then update `configs/paths.yaml` for the local Python environment, datasets,
-and Flow foreground patches. This machine-specific file is not tracked by Git.
+Then update the following entries in `configs/paths.yaml`:
 
-## Dataset layout
-
-Set `DATASET_ROOT` to the directory containing the four datasets:
-
-```bash
-export DATASET_ROOT=/path/to/dual_lens_datasets
+```yaml
+python_bin: /path/to/python
+dataset_root: /path/to/dual_lens_datasets
+flow_foreground_root: /path/to/rgba_foregrounds
 ```
 
-Source files and YAML configurations do not need to be edited. Dataset and
-checkpoint paths can also be supplied directly to `train.sh` and `test.sh`.
+## Data and Pretrained Models
 
-Expected layout:
+The datasets and pretrained models will be hosted on Hugging Face.
+
+- Datasets: **Hugging Face link coming soon**
+- Pretrained models: **Hugging Face link coming soon**
+
+Place the datasets under the configured `dataset_root`:
 
 ```text
 dual_lens_datasets/
 ├── DuSR-RealV2/
-│   └── Paired/
-│       ├── train/{LR,HR_CC_curve,HR_SIFT_CC_curve}
-│       └── test/{LR,LR_center,HR_CC_curve,ref}
-├── CameraFusion-Real/
-│   ├── train/{LR,LR_center,Ref_full,HR,Ref_SIFT}
-│   └── test/{LR,LR_center,HR,Ref_SIFT}
-├── DuSR-Real/
-│   └── ...
-└── RealMCVSR-Real/
-    └── ...
+│   ├── Paired/{train,test}/
+│   └── Unpaired/test/
+├── CameraFusion-Real/{train,test}/
+├── DuSR-Real/{train,test}/
+└── RealMCVSR-Real/{train,test}/
 ```
 
-## Checkpoints
-
-Only the pretrained checkpoints used to report the paper results are released.
-Checkpoints produced by the independent retraining verification are not part
-of this repository or its model release.
-
-Place the released checkpoints as follows:
+Place the downloaded checkpoints as follows:
 
 ```text
 weights/pretrained/
@@ -144,146 +63,94 @@ weights/pretrained/
 └── DuSRFlow_RealMCVSR-Real_GAN.pth
 ```
 
-## Evaluate released models
+## Test
 
-Evaluate each Flow checkpoint independently:
+Run all commands from the repository root. The final argument is the GPU ID.
+
+Test the four DuFlowNet checkpoints:
 
 ```bash
-bash scripts/launchers/flow.sh test DuSR-RealV2-Paired 0
-bash scripts/launchers/flow.sh test CameraFusion-Real 0
-bash scripts/launchers/flow.sh test DuSR-Real 0
-bash scripts/launchers/flow.sh test RealMCVSR-Real 0
+bash test.sh flow_dusr_realv2_paired 0
+bash test.sh flow_camera_fusion_real 0
+bash test.sh flow_dusr_real 0
+bash test.sh flow_realmcvsr_real 0
 ```
 
-Evaluate each dataset-specific SR checkpoint independently:
+Test the reconstruction-oriented DuSRFlow checkpoints:
 
 ```bash
-# Reconstruction-only models
 bash test.sh dusr_realv2_paired_l1 0
 bash test.sh camera_fusion_real_l1 0
 bash test.sh dusr_real_l1 0
 bash test.sh realmcvsr_real_l1 0
+```
 
-# Hybrid reconstruction/perceptual/adversarial models
+Test the perceptual DuSRFlow checkpoints:
+
+```bash
 bash test.sh dusr_realv2_paired_gan 0
 bash test.sh camera_fusion_real_gan 0
 bash test.sh dusr_real_gan 0
 bash test.sh realmcvsr_real_gan 0
 ```
 
-To evaluate a checkpoint stored outside the default `weights/` directory:
+Run inference on the unpaired split:
 
 ```bash
-bash test.sh dusr_realv2_paired_l1 0 \
-    --dataset-root /path/to/dual_lens_datasets \
-    --checkpoint /path/to/sr_checkpoint.pth
+bash test.sh dusr_realv2_unpaired 0
 ```
 
-The DuSR-Real and RealMCVSR-Real hybrid-loss YAML files use
-`model_variant: v2` with `patch_phase: native`. This preserves the original
-patch-grid origins used to generate the paper PNGs. Changing the phase to
-`even`, or using the V3 coordinate-aware overlap stitching, changes a subset of
-images whose crop coordinates lie on a different modulo-4 phase.
+Outputs are saved under `flow_results/` and `results/`.
 
-To evaluate all four Flow checkpoints and all eight SR checkpoints on four
-GPUs:
+## Training
 
-```bash
-bash run_all.sh test-all 0,1,2,3
-```
-
-Verify one checkpoint group only:
-
-```bash
-bash run_all.sh test-flow 0,1,2,3
-bash run_all.sh test-sr-l1 0,1,2,3
-bash run_all.sh test-sr-gan 0,1,2,3
-```
-
-Flow results are written to `flow_results/`; SR results are written to
-`results/`; multi-GPU launcher logs are written to `launcher_logs/`.
-
-## Train DuFlowNet
-
-Flow training uses real dataset backgrounds and synthetic RGBA foreground
-objects. Each dataset is trained with an independent command and YAML:
+Train DuFlowNet with real backgrounds and synthetic RGBA foreground objects:
 
 ```bash
 bash scripts/launchers/flow.sh train DuSR-RealV2-Paired 0 /path/to/rgba_foregrounds
-bash scripts/launchers/flow.sh train CameraFusion-Real 1 /path/to/rgba_foregrounds
-bash scripts/launchers/flow.sh train DuSR-Real 2 /path/to/rgba_foregrounds
-bash scripts/launchers/flow.sh train RealMCVSR-Real 3 /path/to/rgba_foregrounds
+bash scripts/launchers/flow.sh train CameraFusion-Real 0 /path/to/rgba_foregrounds
+bash scripts/launchers/flow.sh train DuSR-Real 0 /path/to/rgba_foregrounds
+bash scripts/launchers/flow.sh train RealMCVSR-Real 0 /path/to/rgba_foregrounds
 ```
 
-The released settings use 448 x 448 patches, batch size 4, 400k iterations,
-Charbonnier photometric loss, and edge-aware second-order smoothness loss.
-Settings are recorded independently in `configs/flow/<dataset>.yaml`.
-
-## Train DuSRFlow
-
-The release exposes one command per dataset and loss. These are the eight SR
-training commands:
+Train DuSRFlow with the reconstruction loss:
 
 ```bash
-# Reconstruction-only training
 bash train.sh dusr_realv2_paired_l1 0
 bash train.sh camera_fusion_real_l1 0
 bash train.sh dusr_real_l1 0
 bash train.sh realmcvsr_real_l1 0
+```
 
-# Hybrid reconstruction/perceptual/adversarial training
+Train DuSRFlow with the perceptual and adversarial losses:
+
+```bash
 bash train.sh dusr_realv2_paired_gan 0
 bash train.sh camera_fusion_real_gan 0
 bash train.sh dusr_real_gan 0
 bash train.sh realmcvsr_real_gan 0
 ```
 
-The paired `DuSR-RealV2-Paired` setting uses 128 x 128 patches and displacement
-`16..48 x2`. The other three datasets use 256 x 256 patches and displacement
-`32..96 x2`. Each exact training and inference configuration is stored in one
-file under `configs/sr/`.
+The dataset, loss, crop size, displacement range, Flow checkpoint, and
+evaluation settings for each experiment are defined under `configs/`.
 
-To initialize SR training with another set of Flow checkpoints:
+## Project Structure
 
-```bash
-bash train.sh dusr_realv2_paired_l1 0 \
-    --dataset-root /path/to/dual_lens_datasets \
-    --flow-checkpoint /path/to/flow_checkpoint.pth
+```text
+DuSRFlow/
+├── configs/             # Dataset and experiment configurations
+├── coordinates/         # Evaluation regions
+├── dusrflow/
+│   ├── data/            # Dataset implementations
+│   └── models/          # DuFlowNet and DuSRFlow models
+├── scripts/             # Experiment launchers
+├── tools/               # Training, testing, and profiling entry points
+├── weights/             # Pretrained checkpoints
+├── train.sh
+└── test.sh
 ```
 
-When the released checkpoints remain under `weights/`, only `DATASET_ROOT`
-needs to be set. Standalone DuFlowNet training additionally requires the RGBA
-foreground-patch directory described above.
+## Acknowledgement
 
-## Configuration checks
-
-Inspect the resolved command without running it:
-
-```bash
-bash scripts/run.sh dusr_realv2_paired_l1 train 0 --dry-run
-```
-
-Validate all SR input paths without loading CUDA operators or starting
-training:
-
-```bash
-bash scripts/run.sh dusr_realv2_paired_l1 train 0 --check-only
-```
-
-Validate one Flow setup:
-
-```bash
-bash scripts/launchers/flow.sh test DuSR-RealV2-Paired 0 --check-only
-```
-
-## Complexity profiling
-
-```bash
-python -m tools.profile_model --all
-python -m tools.profile_model --params
-python -m tools.profile_model --memory
-python -m tools.profile_model --timing --warmup 10 --repeat 50
-```
-
-The default profiling inputs match the paper latency setting: LR and Ref are
-`896 x 448`, while LRC is `448 x 224`.
+The deformable-convolution operator is based on open-source DCNv2
+implementations. Its original license is included with the source code.
