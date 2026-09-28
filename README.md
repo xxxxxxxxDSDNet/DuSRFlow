@@ -49,10 +49,6 @@ Download all official DuFlowNet and DuSRFlow checkpoints:
 hf download zhangfangpu/DuSRFlow --local-dir weights/pretrained
 ```
 
-Install the Hugging Face CLI with `pip install -U huggingface_hub` if the
-`hf` command is unavailable. Both repositories are public and do not require
-authentication for downloading.
-
 Place the datasets under the configured `dataset_root`:
 
 ```text
